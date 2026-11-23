@@ -184,6 +184,26 @@ public partial class MainWindow : Window
     private void Grid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e) =>
         Dispatcher.InvokeAsync(() => _vm.RefreshPlan());
 
+    // ---------------------------------------------------------------- standards: title block
+
+    private void AddTitleLine_Click(object sender, RoutedEventArgs e)
+    {
+        var n = _vm.Profile.TitleBlockFields.Count + 1;
+        var key = $"LINE{n}";
+        for (; _vm.Profile.TitleBlockFields.Any(d => d.Key == key); n++) key = $"LINE{n}";
+        var line = new DerivedField(key, "", "");
+        _vm.Profile.TitleBlockFields.Add(line);
+        TitleGrid.SelectedItem = line;
+        TitleGrid.ScrollIntoView(line);
+    }
+
+    private void RemoveTitleLine_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (var d in TitleGrid.SelectedItems.Cast<DerivedField>().ToList())
+            _vm.Profile.TitleBlockFields.Remove(d);
+        _vm.RefreshPlan();
+    }
+
     // ---------------------------------------------------------------- standards: questions
 
     private void AddField_Click(object sender, RoutedEventArgs e)

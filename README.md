@@ -30,6 +30,25 @@ Put placeholders wherever a project detail should go:
 Placeholders are found in model space, on every layout, and inside block definitions, so a title
 block that is a block updates on every sheet. The `[[` `]]` markers can be changed under *Questions*.
 
+## Title block
+
+The default title block (edit it under *My standards → Title block*):
+
+| Tag / placeholder | Gets | Example |
+|---|---|---|
+| `LINE1` | project type | Single-Family Residential |
+| `LINE2` | project name (line 1) | The Smith Family Lake |
+| `LINE3` | rest of a long project name, else empty | House Renovation |
+| `LINE4` | street address (before the first comma) | 1234 Lakeshore Drive |
+| `LINE5` | city, state ZIP (after the first comma) | Springfield, IL 62704 |
+| `JOB_NO` | project # | 2026-014 |
+| `DATE` | date, written mm/dd/yyyy | 03/07/2026 |
+| `COPYRIGHT` | year of the project date | 2026 |
+
+In your title block drawing, either name the attributes with those tags, or type the placeholder
+(e.g. `[[LINE2]]`) where the text goes. A long name is split between words so line 2 holds at most
+25 characters (changeable). Type the address as `street, city, state ZIP`.
+
 ## Setting up your standards (*My standards* tab)
 
 - **Folder structure:** build the tree, or **Import from a folder…** to copy the tree (and, optionally,

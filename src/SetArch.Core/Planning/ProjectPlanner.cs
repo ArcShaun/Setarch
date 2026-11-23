@@ -44,7 +44,8 @@ public static class ProjectPlanner
     /// <param name="values">Field key → value, as typed by the user.</param>
     public static ProjectPlan Plan(StandardsProfile profile, IReadOnlyDictionary<string, string> values, string parentFolder)
     {
-        var normalized = values.ToDictionary(kv => Tokens.NormalizeKey(kv.Key), kv => (kv.Value ?? "").Trim());
+        var valueErrors = new List<string>();
+        var normalized = ProjectValues.Compute(profile, values, valueErrors);
         var prefix = profile.TokenPrefix;
         var suffix = profile.TokenSuffix;
         profile.Root.LinkParents();
@@ -60,6 +61,7 @@ public static class ProjectPlanner
             TokenSuffix = suffix,
         };
 
+        plan.Errors.AddRange(valueErrors);
         foreach (var f in profile.Fields.Where(f => f.Required))
             if (!normalized.TryGetValue(f.Key, out var v) || string.IsNullOrWhiteSpace(v))
                 plan.Errors.Add($"Please fill in \"{f.Label}\".");

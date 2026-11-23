@@ -186,7 +186,17 @@ public sealed class MainViewModel : INotifyPropertyChanged
         set { _parentFolder = value; OnPropertyChanged(); RefreshPlan(); }
     }
 
-    public ProjectPlan? Plan { get => _plan; private set { _plan = value; OnPropertyChanged(); OnPropertyChanged(nameof(PreviewRoots)); OnPropertyChanged(nameof(Messages)); OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(Summary)); } }
+    public ProjectPlan? Plan { get => _plan; private set { _plan = value; OnPropertyChanged(); OnPropertyChanged(nameof(PreviewRoots)); OnPropertyChanged(nameof(TitleBlockPreview)); OnPropertyChanged(nameof(Messages)); OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(Summary)); } }
+
+    /// <summary>The title block lines as they will be written, for the preview on the New project page.</summary>
+    public IReadOnlyList<Option> TitleBlockPreview =>
+        Plan is null ? Array.Empty<Option>() :
+        Profile.TitleBlockFields
+            .Where(d => !string.IsNullOrWhiteSpace(d.Key))
+            .Select(d => new Option(string.IsNullOrWhiteSpace(d.Description) ? d.Key : d.Description, Plan.Values.GetValueOrDefault(d.Key, "")))
+            .Concat(Profile.Fields.Where(f => !string.IsNullOrEmpty(f.Format))
+                .Select(f => new Option(f.Label, Plan.Values.GetValueOrDefault(f.Key, ""))))
+            .ToList();
 
     public IReadOnlyList<PreviewNode> PreviewRoots => Plan?.Preview is { } p ? new[] { p } : Array.Empty<PreviewNode>();
 

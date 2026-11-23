@@ -88,6 +88,25 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+                        <Border DockPanel.Dock="Top" BorderBrush="#C9D2DA" BorderThickness="1" CornerRadius="4" Padding="10,6" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Title block" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <ItemsControl ItemsSource="{Binding TitleBlockPreview}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,1">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="230"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding Value}" Foreground="{StaticResource Muted}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontFamily="Consolas" TextTrimming="CharacterEllipsis"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
                         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
                             <Button Content="Open project folder" Click="OpenProject_Click" Margin="0,0,8,0"
                                     Visibility="{Binding HasLastProject, Converter={StaticResource BoolToVis}}"/>
@@ -226,11 +245,45 @@
                             </DockPanel>
                         </TabItem>
 
+                        <!-- Title block -->
+                        <TabItem Header="Title block">
+                            <DockPanel Margin="12">
+                                <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,0,0,8" TextWrapping="Wrap">
+                                    What goes on each line of your title block. In your title block drawing, either tag the attributes with these
+                                    names (LINE1, LINE2 ... JOB_NO, COPYRIGHT) or type the placeholder, e.g. [[LINE2]], where the text should go.
+                                    <LineBreak/><LineBreak/>
+                                    Values can use any answer, e.g. [[PROJECT_NAME]], plus: [[PROJECT_NAME_1]] / [[PROJECT_NAME_2]] (a long name split
+                                    over two lines), [[ADDRESS_1]] (street) / [[ADDRESS_2]] (city, state ZIP, everything after the first comma), [[YEAR]]
+                                    (year of the project date). Every answer has _1 / _2 versions.
+                                </TextBlock>
+                                <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Add line" Click="AddTitleLine_Click"/>
+                                        <Button Content="Remove selected" Margin="8,0,0,0" Click="RemoveTitleLine_Click"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="Split long answers after  " VerticalAlignment="Center"/>
+                                        <TextBox Width="50" Text="{Binding Profile.WrapLength}"/>
+                                        <TextBlock Text="  characters" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <DataGrid x:Name="TitleGrid" ItemsSource="{Binding Profile.TitleBlockFields}" AutoGenerateColumns="False" CanUserAddRows="False"
+                                          HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E3E7EB"
+                                          RowHeight="30" CellEditEnding="Grid_CellEditEnding">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Tag / placeholder" Binding="{Binding Key}" Width="170" FontFamily="Consolas"/>
+                                        <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" FontFamily="Consolas"/>
+                                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </DockPanel>
+                        </TabItem>
+
                         <!-- Questions -->
                         <TabItem Header="Questions">
                             <DockPanel Margin="12">
                                 <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,0,0,8" TextWrapping="Wrap"
-                                           Text="The details asked for each new project. The key is the placeholder name: key PROJECT_NAME is written [[PROJECT_NAME]] in folder names, file names and drawings. Options are separated by semicolons and appear as a drop-down. Default value {today} is today's date."/>
+                                           Text="The details asked for each new project. The key is the placeholder name: key PROJECT_NAME is written [[PROJECT_NAME]] in folder names, file names and drawings. Options are separated by semicolons and appear as a drop-down. Default value {today} is today's date. A date format (e.g. MM/dd/yyyy) makes the answer a date and writes it that way."/>
                                 <DockPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Content="Add question" Click="AddField_Click"/>
@@ -251,6 +304,7 @@
                                         <DataGridTextColumn Header="Question" Binding="{Binding Label}" Width="*"/>
                                         <DataGridTextColumn Header="Options (a; b; c)" Binding="{Binding Options}" Width="1.5*"/>
                                         <DataGridTextColumn Header="Default" Binding="{Binding DefaultValue}" Width="110"/>
+                                        <DataGridTextColumn Header="Date format" Binding="{Binding Format}" Width="100"/>
                                         <DataGridCheckBoxColumn Header="Required" Binding="{Binding Required, UpdateSourceTrigger=PropertyChanged}" Width="75"/>
                                     </DataGrid.Columns>
                                 </DataGrid>

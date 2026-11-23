@@ -241,3 +241,102 @@ public class FillScriptTests
         return depth;
     }
 }
+
+public class TitleBlockValueTests
+{
+    private static Dictionary<string, string> Answers(string name, string address, string date = "3/7/2026") => new()
+    {
+        ["PROJECT_TYPE"] = "Single-Family Residential",
+        ["PROJECT_NAME"] = name,
+        ["ADDRESS"] = address,
+        ["PROJECT_NUMBER"] = "2026-014",
+        ["DATE"] = date,
+    };
+
+    [Fact]
+    public void Default_title_block_lines_are_filled()
+    {
+        var p = StandardsProfile.CreateDefault();
+        var v = ProjectValues.Compute(p, Answers("The Smith Family Lake House Renovation", "1234 Lakeshore Drive, Springfield, IL 62704"));
+
+        Assert.Equal("Single-Family Residential", v["LINE1"]);
+        Assert.Equal("The Smith Family Lake", v["LINE2"]);
+        Assert.Equal("House Renovation", v["LINE3"]);
+        Assert.Equal("1234 Lakeshore Drive", v["LINE4"]);
+        Assert.Equal("Springfield, IL 62704", v["LINE5"]);
+        Assert.Equal("2026-014", v["JOB_NO"]);
+        Assert.Equal("03/07/2026", v["DATE"]);
+        Assert.Equal("2026", v["COPYRIGHT"]);
+    }
+
+    [Fact]
+    public void Short_name_leaves_line_3_empty()
+    {
+        var v = ProjectValues.Compute(StandardsProfile.CreateDefault(), Answers("Smith Residence", "12 Oak St"));
+        Assert.Equal("Smith Residence", v["LINE2"]);
+        Assert.Equal("", v["LINE3"]);
+        Assert.Equal("12 Oak St", v["LINE4"]);
+        Assert.Equal("", v["LINE5"]);
+    }
+
+    [Theory]
+    [InlineData("2026-03-07")]
+    [InlineData("03/07/2026")]
+    [InlineData("3-7-2026")]
+    [InlineData("March 7, 2026")]
+    public void Dates_are_written_mm_dd_yyyy(string typed)
+    {
+        var v = ProjectValues.Compute(StandardsProfile.CreateDefault(), Answers("A", "B", typed));
+        Assert.Equal("03/07/2026", v["DATE"]);
+    }
+
+    [Fact]
+    public void Copyright_year_follows_the_project_date()
+    {
+        var v = ProjectValues.Compute(StandardsProfile.CreateDefault(), Answers("A", "B", "12/31/2025"));
+        Assert.Equal("2025", v["COPYRIGHT"]);
+    }
+
+    [Fact]
+    public void Bad_date_is_an_error()
+    {
+        var errors = new List<string>();
+        ProjectValues.Compute(StandardsProfile.CreateDefault(), Answers("A", "B", "next tuesday"), errors);
+        Assert.Contains(errors, e => e.Contains("must be a date"));
+    }
+
+    [Theory]
+    [InlineData("Smith Residence", 25, "Smith Residence", "")]
+    [InlineData("Supercalifragilisticexpialidocious Hall", 10, "Supercalifragilisticexpialidocious", "Hall")]
+    [InlineData("A  B   C", 3, "A B", "C")]
+    public void Wrap_breaks_between_words(string text, int max, string l1, string l2) =>
+        Assert.Equal((l1, l2), ProjectValues.Wrap(text, max));
+
+    [Fact]
+    public void Title_block_lines_reach_the_fill_script()
+    {
+        using var t = new TempDir();
+        var p = StandardsProfile.CreateDefault();
+        var plan = ProjectPlanner.Plan(p, Answers("Smith Residence", "12 Oak St, Springfield, IL 62704"), t.Path);
+        Assert.True(plan.IsValid, string.Join("; ", plan.Errors));
+        var lisp = FillScript.Lisp(plan.Values, "[[", "]]");
+        Assert.Contains("(cons \"LINE5\" \"Springfield, IL 62704\")", lisp);
+        Assert.Contains("(cons \"JOBNO\" \"2026-014\")", lisp);
+        Assert.Contains("(cons \"COPYRIGHT\" \"2026\")", lisp);
+    }
+
+    [Fact]
+    public void Standards_saved_by_the_previous_version_get_the_title_block()
+    {
+        using var t = new TempDir();
+        var path = t.File("old.json", """
+            { "Name": "Office", "TokenPrefix": "[[", "TokenSuffix": "]]",
+              "Fields": [ { "Key": "DATE", "Label": "Date", "Options": "", "Required": false, "DefaultValue": "{today}" } ],
+              "Root": { "Name": "[[PROJECT_NUMBER]]", "Children": [] }, "Files": [], "AutoCadConsolePath": "" }
+            """);
+        var p = StandardsStore.Load(path);
+        Assert.Equal(StandardsProfile.CurrentVersion, p.Version);
+        Assert.Equal("MM/dd/yyyy", p.Fields[0].Format);
+        Assert.Contains(p.TitleBlockFields, d => d.Key == "LINE3");
+    }
+}
