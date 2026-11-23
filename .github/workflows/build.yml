@@ -8,6 +8,7 @@ on:
 jobs:
   windows:
     runs-on: windows-latest
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -16,9 +17,11 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Test
-        run: dotnet test tests/SetArch.Core.Tests -c Release
+        timeout-minutes: 8
+        run: dotnet test tests/SetArch.Core.Tests -c Release --blame-hang-timeout 2m --logger "console;verbosity=normal"
 
       - name: Build app
+        timeout-minutes: 8
         run: dotnet build src/SetArch.App -c Release
 
       - name: Publish SetArch.exe (single file, no .NET install needed)
