@@ -1,45 +1,56 @@
 # SetArch
 
-A Windows app that sets up architectural drawing sheets in AutoCAD. It asks a short set of
-questions, then **Create** builds every sheet for you.
+A Windows app that sets up a new architecture project from **your office's own standards**.
+You answer a few questions, pick where the project goes, and press **Create project**. SetArch then:
 
-## What it asks
+1. creates your project folder tree (configurable, e.g. `2026-014 - Smith Residence/03 CAD/Sheets`),
+2. copies your template files (title block, cover sheet, sheets, spreadsheets …) into the right folders,
+   renamed the way you want (e.g. `2026-014 A-000 Cover.dwg`),
+3. fills in the project details inside the drawings.
 
-1. **Project** – name, number, client, site address, firm, drawn/checked by, date, revision, status
-2. **Paper & plotting** – ISO A0–A4, ARCH C–E1 or ANSI B–D; orientation; plotter (PC3); plot style table
-3. **Title block** – a generated one (vertical strip on the right or along the bottom), or your own DWG
-4. **Which sheets** – cover, general notes, site plan, basement and floor plans, roof plan, RCPs,
-   elevations, sections, details, schedules; numbering by drawing type (G-001, A-101, A-201 …) or sequential
-5. **Sheet list** – edit numbers, titles, sheet types and viewport scales in a table
-6. **Drawing standards** – AIA/NCS-style architectural layers, text styles, view titles, locked viewports
-7. **Review & create** – live preview of each sheet, then create
+It doesn't draw anything itself. Your title block, cover sheet and other standards are used exactly
+as you made them; SetArch only changes their text.
 
-## What it creates
+## The questions
 
-For every sheet: a layout tab with a saved page setup (plotter, paper, 1:1, plot style),
-a border and filled-in title block, a viewport at the right scale (on a non-plotting layer),
-and a view title. The cover sheet gets the project title and a sheet index. The drawing also
-gets units, layers, linetypes and text styles. Existing layouts, layers and styles are never
-changed. If a layout with the same name already exists, that sheet is skipped.
+By default: **Project name, Project #, Address, Project type, Date, Occupancy type, Area**.
+You can rename, remove or add questions under *My standards → Questions*. Each has a key, e.g. `PROJECT_NAME`.
 
-### Two ways to create
+## Placeholders
 
-| | Create in AutoCAD now | Save an AutoLISP file |
-|---|---|---|
-| Works with | Full AutoCAD 2018+ (incl. AutoCAD Architecture) | Full AutoCAD, **AutoCAD LT 2024+** |
-| How | Attaches to (or starts) AutoCAD over COM and builds the sheets | Writes a `.lsp`; in AutoCAD run `APPLOAD`, then `SETARCH` |
+Put placeholders wherever a project detail should go:
 
-### Using your own title block
+| Where | Example |
+|---|---|
+| Folder names | `[[PROJECT_NUMBER]] - [[PROJECT_NAME]]` |
+| Save-as file names | `[[PROJECT_NUMBER]] A-000 Cover.dwg` |
+| Text / MTEXT in a drawing | `PROJECT: [[PROJECT_NAME]]`, `OCCUPANCY: [[OCCUPANCY_TYPE]]` |
+| Attributes in a title block | a value of `[[AREA]]`, **or** an attribute tagged `AREA` (tag matching ignores case, `_` and `-`) |
 
-Pick a `.dwg` drawn at 1:1 in paper units with its lower-left corner at 0,0. Attributes are filled
-by tag (case, spaces, `-` and `_` are ignored): `PROJECT_NAME`, `PROJECT_NO`, `CLIENT`, `ADDRESS`,
-`FIRM`, `SHEET_TITLE`, `SHEET_NO`, `SHEET_OF`, `SCALE`, `DRAWN`, `CHECKED`, `DATE`, `REV`, `STATUS`,
-plus common aliases (`DWG_NO`, `DRAWN_BY`, `TITLE`, `REVISION`, …; see
-`src/SetArch.Core/Planning/TitleBlockFields.cs`). Enter the margins your title block uses so the
-viewport fits in the free area.
+Placeholders are found in model space, on every layout, and inside block definitions, so a title
+block that is a block updates on every sheet. The `[[` `]]` markers can be changed under *Questions*.
 
-Answers can be saved to a `.setarch.json` file and reopened for the next project. The last answers are
-remembered automatically.
+## Setting up your standards (*My standards* tab)
+
+- **Folder structure:** build the tree, or **Import from a folder…** to copy the tree (and, optionally,
+  the files) of an existing blank project folder.
+- **Template files:** each file has the folder it goes in, a save-as name, whether to fill in its
+  text, and optionally a project type it applies to (e.g. a commercial code sheet only for *Commercial*).
+- **Export / Import standards** share the setup with the rest of the office as a `.setarch.json` file.
+
+Existing folders and files are never overwritten. Running Create again on the same project only adds what's missing.
+
+## Filling in drawings
+
+DWG files can only be edited by AutoCAD. SetArch uses **AutoCAD's Core Console** (`accoreconsole.exe`),
+which comes with full AutoCAD and its verticals (Architecture, MEP …). It edits the drawings in the
+background without opening the AutoCAD window. SetArch finds it automatically, or you can set the path under
+*My standards → AutoCAD*.
+
+**AutoCAD LT** doesn't include the Core Console. Tick *Also save a SetArch Fill.lsp*; then in each
+drawing run `APPLOAD` on that file, type `SETARCHFILL`, and save (LT 2024 or newer).
+
+Not filled: text inside tables, multileaders and dimensions, and xrefs (fill the xref'd file itself).
 
 ## Download / build
 
@@ -55,15 +66,8 @@ dotnet run --project src/SetArch.App
 
 ## Project layout
 
-- `src/SetArch.Core` – cross-platform logic: answers model, standards (paper sizes, scales, layers),
-  sheet list generator, plan builder (all geometry), AutoLISP exporter, SVG preview
-- `src/SetArch.App` – WPF wizard and the AutoCAD COM writer (Windows only)
-- `tests/SetArch.Core.Tests` – xUnit tests for Core
-
-## Notes and limits
-
-- SetArch must run at the same privilege level as AutoCAD (don't run one of them as administrator).
-- The page setup uses the paper size names of `DWG To PDF.pc3`. For other plotters it looks for a
-  matching size; if none is found it tells you and you can set it with `PAGESETUP`.
-- Viewports are created empty and centred on 0,0 in model space; pan them onto your drawing
-  (or unlock, pan, re-lock).
+- `src/SetArch.Core`: standards model and JSON storage, placeholder resolution, project planner
+  (works out every folder and file first), creator (folders and copies), folder import,
+  AutoLISP fill script, and the Core Console runner
+- `src/SetArch.App`: the WPF window (Windows only)
+- `tests/SetArch.Core.Tests`: xUnit tests for Core

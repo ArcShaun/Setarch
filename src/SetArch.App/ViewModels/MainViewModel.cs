@@ -2,357 +2,287 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Windows.Input;
 using SetArch.Core.Models;
+using SetArch.Core.Output;
 using SetArch.Core.Planning;
-using SetArch.Core.Standards;
 
 namespace SetArch.App.ViewModels;
 
-public sealed record Option<T>(T Value, string Name)
+public sealed record Option(string Value, string Name)
 {
     public override string ToString() => Name;
 }
 
+/// <summary>One question on the New Project page.</summary>
+public sealed class FieldEntry : INotifyPropertyChanged
+{
+    private string _value;
+
+    public FieldEntry(FieldDefinition definition, string value, string placeholder)
+    {
+        Definition = definition;
+        _value = value;
+        Placeholder = placeholder;
+    }
+
+    public FieldDefinition Definition { get; }
+    public string Label => Definition.Required ? Definition.Label + " *" : Definition.Label;
+    public IReadOnlyList<string> Options => Definition.OptionList;
+    public bool HasOptions => Options.Count > 0;
+    public string Placeholder { get; }
+
+    public string Value
+    {
+        get => _value;
+        set
+        {
+            if (_value == value) return;
+            _value = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+}
+
 public sealed class MainViewModel : INotifyPropertyChanged
 {
-    public static readonly JsonSerializerOptions Json = new()
-    {
-        WriteIndented = true,
-        Converters = { new JsonStringEnumConverter() },
-    };
+    private static readonly string LastFolderFile = Path.Combine(
+        Path.GetDirectoryName(StandardsStore.DefaultPath)!, "last-folder.txt");
 
-    private static readonly string SettingsPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "SetArch", "last-answers.json");
-
-    public const int ProjectStep = 0, PaperStep = 1, TitleBlockStep = 2, SheetsStep = 3, SheetListStep = 4, StandardsStep = 5, CreateStep = 6;
-
-    public IReadOnlyList<string> StepNames { get; } = new[]
-    {
-        "1. Project",
-        "2. Paper & plotting",
-        "3. Title block",
-        "4. Which sheets?",
-        "5. Sheet list",
-        "6. Drawing standards",
-        "7. Review & create",
-    };
-
-    private ProjectAnswers _answers;
-    private int _step;
-    private bool _sheetListEdited;
+    private StandardsProfile _profile;
+    private string _parentFolder = "";
+    private ProjectPlan? _plan;
     private string _log = "";
     private bool _busy;
-    private SheetPlan? _previewPlan;
-    private SheetLayout? _previewSheet;
-    private string _reviewSummary = "";
-    private IReadOnlyList<string> _validationErrors = Array.Empty<string>();
+    private bool _fillDrawings = true;
+    private bool _writeLtLisp;
+    private string? _detectedConsole;
+    private string _lastProjectFolder = "";
 
     public MainViewModel()
     {
-        _answers = LoadLast() ?? new ProjectAnswers();
-        // The sheet list is rebuilt from the "which sheets" answers unless the user edits it.
-        _answers.SheetList.Clear();
-        SheetRows = new ObservableCollection<SheetDefinition>();
-        SheetRows.CollectionChanged += (_, _) => { if (!_regenerating) _sheetListEdited = true; };
-        RefreshScaleOptions();
-        RegenerateSheetList();
-
-        NextCommand = new RelayCommand(() => Step++, () => Step < StepNames.Count - 1 && !Busy);
-        BackCommand = new RelayCommand(() => Step--, () => Step > 0 && !Busy);
-        RegenerateCommand = new RelayCommand(RegenerateSheetList);
-        AddSheetCommand = new RelayCommand(AddSheet);
+        _profile = StandardsStore.LoadOrDefault(StandardsStore.DefaultPath);
+        try { if (File.Exists(LastFolderFile)) _parentFolder = File.ReadAllText(LastFolderFile).Trim(); }
+        catch (IOException) { }
+        _detectedConsole = AutoCadConsole.Detect();
+        _writeLtLisp = ConsolePath is null;
+        RebuildFields();
+        RefreshFolderPaths();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ProjectAnswers Answers
+    // ---------------------------------------------------------------- standards
+
+    public StandardsProfile Profile
     {
-        get => _answers;
+        get => _profile;
         private set
         {
-            _answers = value;
+            _profile = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(SelectedPaper));
-            OnPropertyChanged(nameof(UseCustomTitleBlock));
-            OnPropertyChanged(nameof(UseGeneratedTitleBlock));
+            OnPropertyChanged(nameof(RootNodes));
+            RebuildFields();
+            RefreshFolderPaths();
+            OnPropertyChanged(nameof(ConsoleStatus));
         }
     }
 
-    public ObservableCollection<SheetDefinition> SheetRows { get; }
+    /// <summary>The tree view needs a collection, so the project folder is wrapped in a one-item list.</summary>
+    public IReadOnlyList<FolderNode> RootNodes => new[] { Profile.Root };
 
-    public RelayCommand NextCommand { get; }
-    public RelayCommand BackCommand { get; }
-    public ICommand RegenerateCommand { get; }
-    public ICommand AddSheetCommand { get; }
+    private IReadOnlyList<Option> _folderPaths = Array.Empty<Option>();
+    public IReadOnlyList<Option> FolderPaths { get => _folderPaths; private set { _folderPaths = value; OnPropertyChanged(); } }
 
-    public int Step
+    public IReadOnlyList<string> ProjectTypes =>
+        new[] { "" }.Concat(Profile.Fields.FirstOrDefault(f => f.Key == "PROJECT_TYPE")?.OptionList ?? Array.Empty<string>()).ToList();
+
+    public void RefreshFolderPaths()
     {
-        get => _step;
-        set
-        {
-            if (value == _step || value < 0 || value >= StepNames.Count) return;
-            _step = value;
-            if (_step == SheetListStep && !_sheetListEdited) RegenerateSheetList();
-            if (_step == CreateStep) RefreshReview();
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(IsLastStep));
-            NextCommand.RaiseCanExecuteChanged();
-            BackCommand.RaiseCanExecuteChanged();
-        }
+        Profile.Root.LinkParents();
+        FolderPaths = Profile.Root.SelfAndDescendants()
+            .Select(n => new Option(n.RelativePath, n.RelativePath.Length == 0 ? "(project folder)" : n.RelativePath))
+            .ToList();
+        OnPropertyChanged(nameof(ProjectTypes));
+        RefreshPlan();
     }
 
-    public bool IsLastStep => Step == StepNames.Count - 1;
-
-    // ---------------------------------------------------------------- choices
-
-    public IReadOnlyList<PaperSize> PaperSizes => Core.Standards.PaperSizes.All;
-    public IReadOnlyList<Option<Orientation>> Orientations { get; } = new[] { new Option<Orientation>(Orientation.Landscape, "Landscape"), new Option<Orientation>(Orientation.Portrait, "Portrait") };
-    public IReadOnlyList<Option<TitleBlockPlacement>> Placements { get; } = new[] { new Option<TitleBlockPlacement>(TitleBlockPlacement.RightStrip, "Vertical strip on the right"), new Option<TitleBlockPlacement>(TitleBlockPlacement.BottomStrip, "Horizontal strip along the bottom") };
-    public IReadOnlyList<Option<NumberingScheme>> NumberingSchemes { get; } = new[] { new Option<NumberingScheme>(NumberingScheme.Ncs, "By drawing type (G-001, A-101, A-201 ...)"), new Option<NumberingScheme>(NumberingScheme.Sequential, "Sequential (A00, A01, A02 ...)") };
-    public IReadOnlyList<Option<LayerStandard>> LayerStandardsOptions { get; } = new[] { new Option<LayerStandard>(LayerStandard.Ncs, "Architectural layer set (AIA / NCS style: A-WALL, A-DOOR ...)"), new Option<LayerStandard>(LayerStandard.None, "Only the layers the sheets need") };
-    public IReadOnlyList<Option<LayoutNaming>> LayoutNamings { get; } = new[] { new Option<LayoutNaming>(LayoutNaming.NumberAndTitle, "Number and title (A-101 Ground Floor Plan)"), new Option<LayoutNaming>(LayoutNaming.NumberOnly, "Number only (A-101)") };
-    public IReadOnlyList<SheetKind> SheetKinds { get; } = Enum.GetValues<SheetKind>();
-    public IReadOnlyList<string> PlotDevices { get; } = new[] { "DWG To PDF.pc3", "AutoCAD PDF (High Quality Print).pc3", "AutoCAD PDF (General Documentation).pc3", "DWF6 ePlot.pc3" };
-    public IReadOnlyList<string> PlotStyles { get; } = new[] { "monochrome.ctb", "acad.ctb", "Grayscale.ctb", "Screening 50%.ctb", "monochrome.stb", "acad.stb", "" };
-
-    private IReadOnlyList<Option<string>> _scaleOptions = Array.Empty<Option<string>>();
-    public IReadOnlyList<Option<string>> ScaleOptions { get => _scaleOptions; private set { _scaleOptions = value; OnPropertyChanged(); } }
-
-    public PaperSize SelectedPaper
+    public void SaveStandards()
     {
-        get => Core.Standards.PaperSizes.Get(Answers.Format.PaperSizeId);
-        set
+        StandardsStore.Save(Profile, StandardsStore.DefaultPath);
+        RebuildFields();
+        RefreshFolderPaths();
+    }
+
+    public void ExportStandards(string path) => StandardsStore.Save(Profile, path);
+
+    public void ImportStandards(string path)
+    {
+        Profile = StandardsStore.Load(path);
+        StandardsStore.Save(Profile, StandardsStore.DefaultPath);
+    }
+
+    public void ResetStandards() => Profile = StandardsProfile.CreateDefault();
+
+    public void ImportFolderTree(string folder, bool includeFiles)
+    {
+        FolderImporter.Import(Profile, folder, includeFiles);
+        OnPropertyChanged(nameof(RootNodes));
+        RefreshFolderPaths();
+    }
+
+    public void AddTemplateFiles(IEnumerable<string> paths, string folder)
+    {
+        foreach (var path in paths)
         {
-            var unitsChanged = value.Units != SelectedPaper.Units;
-            Answers.Format.PaperSizeId = value.Id;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(UnitsLabel));
-            if (unitsChanged)
+            Profile.Files.Add(new TemplateFile
             {
-                RefreshScaleOptions();
-                // Scales are unit-specific, so the list has to be rebuilt.
-                _sheetListEdited = false;
-                RegenerateSheetList();
-            }
+                SourcePath = path,
+                Folder = folder,
+                FileName = FolderImporter.DefaultSaveAs(path),
+                FillText = path.EndsWith(".dwg", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".dwt", StringComparison.OrdinalIgnoreCase),
+            });
         }
+        RefreshPlan();
     }
 
-    public string UnitsLabel => SelectedPaper.Units == PaperUnits.Millimeters ? "millimetres" : "inches";
+    // ---------------------------------------------------------------- AutoCAD
 
-    public bool UseCustomTitleBlock
+    /// <summary>The console to use: the one set in the standards, else the detected one.</summary>
+    public string? ConsolePath =>
+        !string.IsNullOrWhiteSpace(Profile.AutoCadConsolePath) && File.Exists(Profile.AutoCadConsolePath)
+            ? Profile.AutoCadConsolePath
+            : _detectedConsole;
+
+    public string ConsoleStatus => ConsolePath is { } p
+        ? $"Using AutoCAD at {Path.GetDirectoryName(p)}"
+        : "AutoCAD (full version) wasn't found on this computer, so drawings can't be filled in automatically.";
+
+    public bool CanFillAutomatically => ConsolePath is not null;
+
+    public string AutoCadConsolePath
     {
-        get => Answers.TitleBlock.Mode == TitleBlockMode.CustomBlock;
+        get => Profile.AutoCadConsolePath;
         set
         {
-            Answers.TitleBlock.Mode = value ? TitleBlockMode.CustomBlock : TitleBlockMode.Generated;
+            Profile.AutoCadConsolePath = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(UseGeneratedTitleBlock));
+            OnPropertyChanged(nameof(ConsoleStatus));
+            OnPropertyChanged(nameof(CanFillAutomatically));
         }
     }
 
-    public bool UseGeneratedTitleBlock
+    public bool FillDrawings { get => _fillDrawings; set { _fillDrawings = value; OnPropertyChanged(); } }
+    public bool WriteLtLisp { get => _writeLtLisp; set { _writeLtLisp = value; OnPropertyChanged(); } }
+
+    // ---------------------------------------------------------------- new project
+
+    public ObservableCollection<FieldEntry> Fields { get; } = new();
+
+    public string ParentFolder
     {
-        get => !UseCustomTitleBlock;
-        set => UseCustomTitleBlock = !value;
+        get => _parentFolder;
+        set { _parentFolder = value; OnPropertyChanged(); RefreshPlan(); }
     }
 
-    public string CustomBlockPath
-    {
-        get => Answers.TitleBlock.CustomBlockPath;
-        set { Answers.TitleBlock.CustomBlockPath = value; OnPropertyChanged(); }
-    }
+    public ProjectPlan? Plan { get => _plan; private set { _plan = value; OnPropertyChanged(); OnPropertyChanged(nameof(PreviewRoots)); OnPropertyChanged(nameof(Messages)); OnPropertyChanged(nameof(CanCreate)); OnPropertyChanged(nameof(Summary)); } }
 
-    // ---------------------------------------------------------------- output
+    public IReadOnlyList<PreviewNode> PreviewRoots => Plan?.Preview is { } p ? new[] { p } : Array.Empty<PreviewNode>();
 
-    private bool _createInAutoCad = true;
-    public bool CreateInAutoCad { get => _createInAutoCad; set { _createInAutoCad = value; OnPropertyChanged(); OnPropertyChanged(nameof(SaveLisp)); } }
-    public bool SaveLisp { get => !_createInAutoCad; set => CreateInAutoCad = !value; }
+    public IReadOnlyList<string> Messages =>
+        Plan is null ? Array.Empty<string>() : Plan.Errors.Select(e => "✖  " + e).Concat(Plan.Warnings.Select(w => "⚠  " + w)).ToList();
 
-    private bool _newDrawing = true;
-    public bool NewDrawing { get => _newDrawing; set { _newDrawing = value; OnPropertyChanged(); } }
+    public string Summary => Plan is null ? "" :
+        $"{Plan.ProjectFolder}\n{Plan.Folders.Count} folders, {Plan.Files.Count} files ({Plan.Files.Count(f => f.FillText)} drawings to fill in)";
 
-    private string _saveDrawingPath = "";
-    public string SaveDrawingPath { get => _saveDrawingPath; set { _saveDrawingPath = value; OnPropertyChanged(); } }
-
-    private bool _lispPageSetup = true;
-    public bool LispPageSetup { get => _lispPageSetup; set { _lispPageSetup = value; OnPropertyChanged(); } }
+    public bool CanCreate => Plan is { IsValid: true } && !Busy;
 
     public string Log { get => _log; private set { _log = value; OnPropertyChanged(); } }
 
-    public bool Busy
-    {
-        get => _busy;
-        set
-        {
-            _busy = value;
-            OnPropertyChanged();
-            NextCommand.RaiseCanExecuteChanged();
-            BackCommand.RaiseCanExecuteChanged();
-        }
-    }
+    public bool Busy { get => _busy; private set { _busy = value; OnPropertyChanged(); OnPropertyChanged(nameof(CanCreate)); } }
+
+    public string LastProjectFolder { get => _lastProjectFolder; private set { _lastProjectFolder = value; OnPropertyChanged(); OnPropertyChanged(nameof(HasLastProject)); } }
+    public bool HasLastProject => LastProjectFolder.Length > 0 && Directory.Exists(LastProjectFolder);
 
     public void AppendLog(string line) => Log = Log.Length == 0 ? line : Log + Environment.NewLine + line;
-    public void ClearLog() => Log = "";
 
-    // ---------------------------------------------------------------- review
-
-    public SheetPlan? PreviewPlan { get => _previewPlan; private set { _previewPlan = value; OnPropertyChanged(); } }
-    public SheetLayout? PreviewSheet { get => _previewSheet; set { _previewSheet = value; OnPropertyChanged(); } }
-    public string ReviewSummary { get => _reviewSummary; private set { _reviewSummary = value; OnPropertyChanged(); } }
-    public IReadOnlyList<string> ValidationErrors { get => _validationErrors; private set { _validationErrors = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsValid)); } }
-    public bool IsValid => ValidationErrors.Count == 0;
-
-    public void RefreshReview()
+    public void RebuildFields()
     {
-        SyncSheetList();
-        ValidationErrors = SheetPlanBuilder.Validate(Answers);
-        if (!IsValid)
+        var old = Fields.ToDictionary(f => f.Definition.Key, f => f.Value);
+        foreach (var f in Fields) f.PropertyChanged -= OnFieldChanged;
+        Fields.Clear();
+        foreach (var def in Profile.Fields.Where(d => !string.IsNullOrWhiteSpace(d.Key)))
         {
-            PreviewPlan = null;
-            PreviewSheet = null;
-            ReviewSummary = "";
-            return;
+            var entry = new FieldEntry(def, old.TryGetValue(def.Key, out var v) ? v : ProjectPlanner.DefaultValue(def), Profile.Token(def.Key));
+            entry.PropertyChanged += OnFieldChanged;
+            Fields.Add(entry);
         }
-
-        var plan = SheetPlanBuilder.Build(Answers);
-        PreviewPlan = plan;
-        PreviewSheet = plan.Sheets.FirstOrDefault(s => s.Viewport is not null) ?? plan.Sheets.FirstOrDefault();
-        ReviewSummary =
-            $"{plan.Sheets.Count} sheets on {plan.Paper.Name}, {plan.Orientation.ToString().ToLowerInvariant()}\n" +
-            $"Plotter: {plan.PlotDevice}   Plot style: {(string.IsNullOrEmpty(plan.PlotStyleTable) ? "none" : plan.PlotStyleTable)}\n" +
-            $"{plan.Layers.Count} layers, {plan.TextStyles.Count} text styles, " +
-            $"{(Answers.TitleBlock.Mode == TitleBlockMode.Generated ? "generated title block" : "your title block: " + Path.GetFileName(Answers.TitleBlock.CustomBlockPath))}";
+        OnPropertyChanged(nameof(ProjectTypes));
+        RefreshPlan();
     }
 
-    /// <summary>Builds the plan for the current answers (call after <see cref="RefreshReview"/> reports it is valid).</summary>
-    public SheetPlan BuildPlan()
+    private void OnFieldChanged(object? sender, PropertyChangedEventArgs e) => RefreshPlan();
+
+    public Dictionary<string, string> Values() =>
+        Fields.GroupBy(f => f.Definition.Key).ToDictionary(g => g.Key, g => g.First().Value ?? "");
+
+    public void RefreshPlan()
     {
-        SyncSheetList();
-        return SheetPlanBuilder.Build(Answers);
+        if (Fields.Count == 0 && Profile.Fields.Count > 0) return; // still constructing
+        Plan = ProjectPlanner.Plan(Profile, Values(), ParentFolder);
     }
 
-    // ---------------------------------------------------------------- sheet list
-
-    private bool _regenerating;
-
-    public void RegenerateSheetList()
+    public async Task CreateAsync()
     {
-        _regenerating = true;
+        RefreshPlan();
+        if (Plan is not { IsValid: true } plan) return;
+
+        Busy = true;
+        Log = "";
         try
         {
-            SheetRows.Clear();
-            foreach (var s in SheetListGenerator.Generate(Answers.Sheets, SelectedPaper.Units))
-                SheetRows.Add(s);
-            _sheetListEdited = false;
+            try { Directory.CreateDirectory(Path.GetDirectoryName(LastFolderFile)!); File.WriteAllText(LastFolderFile, ParentFolder); }
+            catch (IOException) { }
+
+            var result = await Task.Run(() => ProjectCreator.Create(plan, line => System.Windows.Application.Current.Dispatcher.Invoke(() => AppendLog(line))));
+            LastProjectFolder = plan.ProjectFolder;
+
+            if (result.DrawingsToFill.Count > 0)
+            {
+                if (FillDrawings && ConsolePath is { } console)
+                {
+                    AppendLog($"Filling in {result.DrawingsToFill.Count} drawing(s) with AutoCAD ...");
+                    var filler = new AutoCadConsole(console);
+                    var results = await filler.FillAsync(result.DrawingsToFill, plan.Values, plan.TokenPrefix, plan.TokenSuffix,
+                        line => System.Windows.Application.Current.Dispatcher.Invoke(() => AppendLog(line)));
+                    var failed = results.Count(r => !r.Success);
+                    if (failed > 0) AppendLog($"{failed} drawing(s) could not be filled in; open them and check.");
+                }
+
+                if (WriteLtLisp)
+                {
+                    var lsp = Path.Combine(plan.ProjectFolder, "SetArch Fill.lsp");
+                    File.WriteAllText(lsp, FillScript.LtLisp(plan.Values, plan.TokenPrefix, plan.TokenSuffix), System.Text.Encoding.ASCII);
+                    AppendLog($"Saved {Path.GetFileName(lsp)} in the project folder. In each drawing: APPLOAD it, type {FillScript.LtCommand}, then save.");
+                }
+            }
+
+            AppendLog($"Done. {result.FoldersCreated} folders and {result.FilesCopied} files created" +
+                      (result.Skipped.Count > 0 ? $", {result.Skipped.Count} existing file(s) left untouched." : "."));
+        }
+        catch (Exception ex)
+        {
+            AppendLog("Failed: " + ex.Message);
+            throw;
         }
         finally
         {
-            _regenerating = false;
-        }
-    }
-
-    /// <summary>Called by the grid when the user edits a cell, so later answer changes don't overwrite their edits.</summary>
-    public void MarkSheetListEdited() => _sheetListEdited = true;
-
-    private void AddSheet()
-    {
-        SheetRows.Add(new SheetDefinition
-        {
-            Number = "A-" + (SheetRows.Count + 1).ToString("000"),
-            Title = "New Sheet",
-            Kind = SheetKind.Other,
-            ScaleId = Scales.DefaultFor(SheetKind.Other, SelectedPaper.Units),
-        });
-    }
-
-    private void SyncSheetList()
-    {
-        Answers.SheetList = SheetRows.ToList();
-    }
-
-    private void RefreshScaleOptions()
-    {
-        var list = new List<Option<string>> { new(Scales.None, "(no viewport)") };
-        list.AddRange(Scales.For(SelectedPaper.Units).Select(s => new Option<string>(s.Id, s.Name)));
-        ScaleOptions = list;
-    }
-
-    // ---------------------------------------------------------------- persistence
-
-    public void SaveAnswers(string path)
-    {
-        SyncSheetList();
-        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        File.WriteAllText(path, JsonSerializer.Serialize(Answers, Json));
-    }
-
-    public void LoadAnswers(string path)
-    {
-        var loaded = JsonSerializer.Deserialize<ProjectAnswers>(File.ReadAllText(path), Json)
-                     ?? throw new InvalidDataException("The file does not contain SetArch answers.");
-        _ = Core.Standards.PaperSizes.Get(loaded.Format.PaperSizeId); // validate
-        Answers = loaded;
-        RefreshScaleOptions();
-
-        _regenerating = true;
-        try
-        {
-            SheetRows.Clear();
-            var rows = loaded.SheetList.Count > 0 ? loaded.SheetList : SheetListGenerator.Generate(loaded.Sheets, SelectedPaper.Units);
-            foreach (var s in rows) SheetRows.Add(s);
-            _sheetListEdited = loaded.SheetList.Count > 0;
-        }
-        finally
-        {
-            _regenerating = false;
-        }
-        Step = ProjectStep;
-    }
-
-    /// <summary>Remembers the answers (firm name, paper, standards ...) for next time. Project-specific list is kept too.</summary>
-    public void SaveLast()
-    {
-        try { SaveAnswers(SettingsPath); }
-        catch (Exception) { /* not important enough to bother the user */ }
-    }
-
-    private static ProjectAnswers? LoadLast()
-    {
-        try
-        {
-            if (!File.Exists(SettingsPath)) return null;
-            var a = JsonSerializer.Deserialize<ProjectAnswers>(File.ReadAllText(SettingsPath), Json);
-            if (a is null) return null;
-            _ = Core.Standards.PaperSizes.Get(a.Format.PaperSizeId);
-            a.Project.Date = DateTime.Today.ToString("yyyy-MM-dd");
-            return a;
-        }
-        catch (Exception)
-        {
-            return null;
+            Busy = false;
+            RefreshPlan();
         }
     }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-}
-
-public sealed class RelayCommand : ICommand
-{
-    private readonly Action _execute;
-    private readonly Func<bool>? _canExecute;
-
-    public RelayCommand(Action execute, Func<bool>? canExecute = null)
-    {
-        _execute = execute;
-        _canExecute = canExecute;
-    }
-
-    public event EventHandler? CanExecuteChanged;
-    public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
-    public void Execute(object? parameter) => _execute();
-    public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 }
