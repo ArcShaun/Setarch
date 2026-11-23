@@ -49,6 +49,46 @@ In your title block drawing, either name the attributes with those tags, or type
 (e.g. `[[LINE2]]`) where the text goes. A long name is split between words so line 2 holds at most
 25 characters (changeable). Type the address as `street, city, state ZIP`.
 
+## Code analysis: plumbing fixtures and egress distances
+
+The **Code analysis** tab has your two calculators built in (no Excel needed):
+
+- **Plumbing fixtures** (from *Plumbing_Calculator.xlsx*, FBC Plumbing Table 403.1 with Table 1004.5 occupant loads)
+- **Egress distances** (from *common_path-dead_end-travel_distance.xlsx*, 2023 FBC and FFPC)
+
+They start from the project's **Occupancy type** and **Area**: e.g. *B* with *2,450 SF* selects
+*Business areas*, *BUSINESS (B)* and *BUSINESS - New*. You can change any input, and add rows for mixed use.
+Results update live and fill these placeholders in any template drawing:
+
+**Plumbing** (`_REQ` = required, rounded up; `_PROV` = provided, same as required; `_CALC` = exact, 2 decimals)
+
+| Placeholder | Meaning |
+|---|---|
+| `[[WC_MALE_REQ]]` `[[WC_FEMALE_REQ]]` `[[WC_TOTAL_REQ]]` | Water closets |
+| `[[LAV_MALE_REQ]]` `[[LAV_FEMALE_REQ]]` `[[LAV_TOTAL_REQ]]` | Lavatories |
+| `[[BATH_REQ]]` | Bathtubs / showers |
+| `[[FOUNTAIN_REQ]]` | Drinking fountains |
+| `[[SERVICE_SINK_REQ]]` | Service sinks |
+| `[[PLUMB_OCCUPANTS]]` `[[PLUMB_MALE_PCT]]` `[[PLUMB_FEMALE_PCT]]` `[[PLUMB_FLOORS]]` | Totals and inputs |
+| `[[PL1_FUNCTION]]` … `[[PL8_FUNCTION]]` | Each row: function of space; also `_OCCUPANCY`, `_CLASSIFICATION`, `_BASIS`, `_AREA`, `_FACTOR`, `_OCCUPANTS`, `_WC_MALE`, `_WC_FEMALE`, `_LAV_MALE`, `_LAV_FEMALE`, `_BATH`, `_FOUNTAIN`, `_SERVICE_SINK` |
+
+**Egress** (`CP` = common path of egress travel, `DE` = dead end, `TD` = exit access travel distance)
+
+| Placeholder | Meaning |
+|---|---|
+| `[[CP_FBC]]` `[[CP_FBC_SECTION]]` `[[CP_FFPC]]` `[[CP_FFPC_SECTION]]` | Common path limit and code section, FBC and FFPC |
+| `[[DE_FBC]]` … `[[DE_FFPC_SECTION]]` | Dead end, same four |
+| `[[TD_FBC]]` … `[[TD_FFPC_SECTION]]` | Travel distance, same four |
+| `[[EGRESS_FBC_OCCUPANCY]]` `[[EGRESS_FFPC_OCCUPANCY]]` `[[SPRINKLERED]]` | Inputs (SPRINKLERED / UNSPRINKLERED) |
+| `[[EGRESS_NOTE1]]` … `[[EGRESS_NOTE5]]` | Footnotes that apply, "2a - text"; also `_ID` and `_TEXT` versions |
+| `[[EGRESS_NOTES_MORE]]` | "No footnotes apply…" / "… plus N more" |
+
+Footnote text is long; use MTEXT with a fixed width for it so it wraps.
+
+Updating the code tables: the calculators use the tables from your spreadsheets, stored in
+`src/SetArch.Core/Calculators/Data/`. After editing the spreadsheets, run
+`python3 tools/export_calculator_data.py <Plumbing_Calculator.xlsx> <travel_distance.xlsx>` and rebuild.
+
 ## Setting up your standards (*My standards* tab)
 
 - **Folder structure:** build the tree, or **Import from a folder…** to copy the tree (and, optionally,

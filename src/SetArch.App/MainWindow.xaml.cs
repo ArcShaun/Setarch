@@ -66,6 +66,15 @@ public partial class MainWindow : Window
         }
     }
 
+    // ---------------------------------------------------------------- code analysis
+
+    private void AddPlumbingRow_Click(object sender, RoutedEventArgs e) => _vm.CodeAnalysis.AddRow();
+
+    private void RemovePlumbingRow_Click(object sender, RoutedEventArgs e)
+    {
+        if ((sender as FrameworkElement)?.DataContext is PlumbingRowViewModel row) _vm.CodeAnalysis.RemoveRow(row);
+    }
+
     // ---------------------------------------------------------------- standards: folders
 
     private void FolderTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

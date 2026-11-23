@@ -67,6 +67,7 @@ public sealed class MainViewModel : INotifyPropertyChanged
         catch (IOException) { }
         _detectedConsole = AutoCadConsole.Detect();
         _writeLtLisp = ConsolePath is null;
+        CodeAnalysis.ResultsChanged += (_, _) => RefreshPlan();
         RebuildFields();
         RefreshFolderPaths();
     }
@@ -180,6 +181,9 @@ public sealed class MainViewModel : INotifyPropertyChanged
 
     public ObservableCollection<FieldEntry> Fields { get; } = new();
 
+    /// <summary>Plumbing fixture and egress distance calculators; their results are placeholders too.</summary>
+    public CodeAnalysisViewModel CodeAnalysis { get; } = new();
+
     public string ParentFolder
     {
         get => _parentFolder;
@@ -229,13 +233,30 @@ public sealed class MainViewModel : INotifyPropertyChanged
             Fields.Add(entry);
         }
         OnPropertyChanged(nameof(ProjectTypes));
+        SuggestCodeInputs();
         RefreshPlan();
     }
 
-    private void OnFieldChanged(object? sender, PropertyChangedEventArgs e) => RefreshPlan();
+    private void OnFieldChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (sender is FieldEntry { Definition.Key: "OCCUPANCY_TYPE" or "AREA" }) SuggestCodeInputs();
+        RefreshPlan();
+    }
 
-    public Dictionary<string, string> Values() =>
-        Fields.GroupBy(f => f.Definition.Key).ToDictionary(g => g.Key, g => g.First().Value ?? "");
+    private void SuggestCodeInputs()
+    {
+        string Answer(string key) => Fields.FirstOrDefault(f => f.Definition.Key == key)?.Value ?? "";
+        CodeAnalysis.SuggestFrom(Answer("OCCUPANCY_TYPE"), Answer("AREA"));
+    }
+
+    /// <summary>The answers plus the calculator results (answers win if a key is used by both).</summary>
+    public Dictionary<string, string> Values()
+    {
+        var values = CodeAnalysis.Placeholders();
+        foreach (var g in Fields.GroupBy(f => f.Definition.Key))
+            values[g.Key] = g.First().Value ?? "";
+        return values;
+    }
 
     public void RefreshPlan()
     {

@@ -1,0 +1,1588 @@
+{
+ "Source": "cde6ff92-Plumbing_Calculator.xlsx",
+ "Occupancies": [
+  {
+   "Key": "Assembly - Theaters and other buildings for the performing arts and motion pictures",
+   "Classification": "Assembly",
+   "Description": "Theaters and other buildings for the performing arts and motion pictures",
+   "Basis": "Occupants",
+   "WcMale": [
+    125.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    65.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Nightclubs, bars, taverns, dance halls and buildings for similar purposes",
+   "Classification": "Assembly",
+   "Description": "Nightclubs, bars, taverns, dance halls and buildings for similar purposes",
+   "Basis": "Occupants",
+   "WcMale": [
+    40.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    40.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Restaurants, banquet halls and food courts",
+   "Classification": "Assembly",
+   "Description": "Restaurants, banquet halls and food courts",
+   "Basis": "Occupants",
+   "WcMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Casino gaming areas",
+   "Classification": "Assembly",
+   "Description": "Casino gaming areas",
+   "Basis": "Occupants",
+   "WcMale": [
+    100.0,
+    400.0,
+    250.0
+   ],
+   "WcFemale": [
+    50.0,
+    400.0,
+    150.0
+   ],
+   "LavMale": [
+    250.0,
+    750.0,
+    500.0
+   ],
+   "LavFemale": [
+    250.0,
+    750.0,
+    500.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums",
+   "Classification": "Assembly",
+   "Description": "Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums",
+   "Basis": "Occupants",
+   "WcMale": [
+    125.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    65.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Passenger terminals and transportation facilities",
+   "Classification": "Assembly",
+   "Description": "Passenger terminals and transportation facilities",
+   "Basis": "Occupants",
+   "WcMale": [
+    500.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    500.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    750.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    750.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Places of worship and other religious services",
+   "Classification": "Assembly",
+   "Description": "Places of worship and other religious services",
+   "Basis": "Occupants",
+   "WcMale": [
+    150.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Coliseums, arenas, skating rinks and tennis courts for indoor sporting events and activities",
+   "Classification": "Assembly",
+   "Description": "Coliseums, arenas, skating rinks and tennis courts for indoor sporting events and activities",
+   "Basis": "Occupants",
+   "WcMale": [
+    75.0,
+    1500.0,
+    120.0
+   ],
+   "WcFemale": [
+    40.0,
+    1520.0,
+    60.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    150.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Assembly - Stadiums, amusement parks, bleachers and grandstands for outdoor sporting events and activities",
+   "Classification": "Assembly",
+   "Description": "Stadiums, amusement parks, bleachers and grandstands for outdoor sporting events and activities",
+   "Basis": "Occupants",
+   "WcMale": [
+    75.0,
+    1500.0,
+    120.0
+   ],
+   "WcFemale": [
+    40.0,
+    1520.0,
+    60.0
+   ],
+   "LavMale": [
+    200.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    150.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Business - Buildings for the transaction of business, non-medical professional services, other services involving merchandise, office buildings, banks, light industrial and similar uses",
+   "Classification": "Business",
+   "Description": "Buildings for the transaction of business, non-medical professional services, other services involving merchandise, office buildings, banks, light industrial and similar uses",
+   "Basis": "Occupants",
+   "WcMale": [
+    25.0,
+    50.0,
+    50.0
+   ],
+   "WcFemale": [
+    25.0,
+    50.0,
+    50.0
+   ],
+   "LavMale": [
+    40.0,
+    80.0,
+    80.0
+   ],
+   "LavFemale": [
+    40.0,
+    80.0,
+    80.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": true
+  },
+  {
+   "Key": "Business - Ambulatory care facilities and outpatient clinics",
+   "Classification": "Business",
+   "Description": "Ambulatory care facilities and outpatient clinics",
+   "Basis": "Occupants",
+   "WcMale": [
+    25.0,
+    50.0,
+    50.0
+   ],
+   "WcFemale": [
+    25.0,
+    50.0,
+    50.0
+   ],
+   "LavMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Floor",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Educational - Educational facilities",
+   "Classification": "Educational",
+   "Description": "Educational facilities",
+   "Basis": "Occupants",
+   "WcMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Factory and industrial - Structures in which occupants are engaged in work fabricating, assembly or processing of products or materials",
+   "Classification": "Factory and industrial",
+   "Description": "Structures in which occupants are engaged in work fabricating, assembly or processing of products or materials",
+   "Basis": "Occupants",
+   "WcMale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 400.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Alcohol and drug centers, congregate care facilities, group homes, halfway houses, social rehabilitation facilities and foster care facilities",
+   "Classification": "Institutional",
+   "Description": "Alcohol and drug centers, congregate care facilities, group homes, halfway houses, social rehabilitation facilities and foster care facilities",
+   "Basis": "Units",
+   "WcMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 8.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Assisted living and residential board and care facilities - sleeping units for care recipients",
+   "Classification": "Institutional",
+   "Description": "Assisted living and residential board and care facilities - sleeping units for care recipients",
+   "Basis": "Units",
+   "WcMale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 8.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Assisted living and residential board and care facilities - dwelling units for care recipients",
+   "Classification": "Institutional",
+   "Description": "Assisted living and residential board and care facilities - dwelling units for care recipients",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 1.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Assisted living and residential board and care facilities - employee facilities",
+   "Classification": "Institutional",
+   "Description": "Assisted living and residential board and care facilities - employee facilities",
+   "Basis": "Units",
+   "WcMale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Floor",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Assisted living and residential board and care facilities - visitor facilities",
+   "Classification": "Institutional",
+   "Description": "Assisted living and residential board and care facilities - visitor facilities",
+   "Basis": "Units",
+   "WcMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Nursing homes - sleeping units for care recipients",
+   "Classification": "Institutional",
+   "Description": "Nursing homes - sleeping units for care recipients",
+   "Basis": "Units",
+   "WcMale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    2.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 8.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Nursing homes - employee facilities",
+   "Classification": "Institutional",
+   "Description": "Nursing homes - employee facilities",
+   "Basis": "Units",
+   "WcMale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    60.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Floor",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Nursing homes - visitor facilities",
+   "Classification": "Institutional",
+   "Description": "Nursing homes - visitor facilities",
+   "Basis": "Units",
+   "WcMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Hospitals - sleeping units for care recipients",
+   "Classification": "Institutional",
+   "Description": "Hospitals - sleeping units for care recipients",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 100.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Hospitals - care recipient treatment areas",
+   "Classification": "Institutional",
+   "Description": "Hospitals - care recipient treatment areas",
+   "Basis": "Units",
+   "WcMale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Hospitals - employee facilities",
+   "Classification": "Institutional",
+   "Description": "Hospitals - employee facilities",
+   "Basis": "Units",
+   "WcMale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Floor",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Hospitals - visitor facilities",
+   "Classification": "Institutional",
+   "Description": "Hospitals - visitor facilities",
+   "Basis": "Units",
+   "WcMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    50.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Employees in hospitals and nursing homes",
+   "Classification": "Institutional",
+   "Description": "Employees in hospitals and nursing homes",
+   "Basis": "Occupants",
+   "WcMale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    35.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    35.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Visitors in hospitals and nursing homes",
+   "Classification": "Institutional",
+   "Description": "Visitors in hospitals and nursing homes",
+   "Basis": "Occupants",
+   "WcMale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    75.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 500.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Prisons - cells",
+   "Classification": "Institutional",
+   "Description": "Prisons - cells",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 15.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Reformatories, detention centers and correctional centers - cells",
+   "Classification": "Institutional",
+   "Description": "Reformatories, detention centers and correctional centers - cells",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 15.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Reformatories, detention centers and correctional centers - congregate living facilities",
+   "Classification": "Institutional",
+   "Description": "Reformatories, detention centers and correctional centers - congregate living facilities",
+   "Basis": "Occupants",
+   "WcMale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 15.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Reformatories, detention centers and correctional centers - employees",
+   "Classification": "Institutional",
+   "Description": "Reformatories, detention centers and correctional centers - employees",
+   "Basis": "Occupants",
+   "WcMale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    25.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    35.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    35.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "None",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Institutional - Adult day care and child day care",
+   "Classification": "Institutional",
+   "Description": "Adult day care and child day care",
+   "Basis": "Occupants",
+   "WcMale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    15.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Mercantile - Retail stores, service stations, shops, salesrooms, markets and shopping centers",
+   "Classification": "Mercantile",
+   "Description": "Retail stores, service stations, shops, salesrooms, markets and shopping centers",
+   "Basis": "Occupants",
+   "WcMale": [
+    500.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    500.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    750.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    750.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": true
+  },
+  {
+   "Key": "Residential - Hotels, motels, boarding houses (transient)",
+   "Classification": "Residential",
+   "Description": "Hotels, motels, boarding houses (transient)",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 1.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "Building",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Residential - Dormitories, fraternities, sororities and boarding houses (not transient)",
+   "Classification": "Residential",
+   "Description": "Dormitories, fraternities, sororities and boarding houses (not transient)",
+   "Basis": "Occupants",
+   "WcMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 8.0,
+   "FountainPer": 100.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Residential - Apartment house",
+   "Classification": "Residential",
+   "Description": "Apartment house",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 1.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Residential - Congregate living facilities with 16 or fewer care recipients receiving custodial care",
+   "Classification": "Residential",
+   "Description": "Congregate living facilities with 16 or fewer care recipients receiving custodial care",
+   "Basis": "Units",
+   "WcMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    10.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 8.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Residential - One- and two-family dwellings and lodging houses with five or fewer guestrooms",
+   "Classification": "Residential",
+   "Description": "One- and two-family dwellings and lodging houses with five or fewer guestrooms",
+   "Basis": "Units",
+   "WcMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 1.0,
+   "FountainPer": 0.0,
+   "ServiceSink": "None",
+   "SexSeparated": false,
+   "FountainExceptionE": false
+  },
+  {
+   "Key": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)",
+   "Classification": "Storage",
+   "Description": "Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)",
+   "Basis": "Occupants",
+   "WcMale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "WcFemale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "LavMale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "LavFemale": [
+    100.0,
+    0.0,
+    0.0
+   ],
+   "BathPer": 0.0,
+   "FountainPer": 1000.0,
+   "ServiceSink": "Building",
+   "SexSeparated": true,
+   "FountainExceptionE": false
+  }
+ ],
+ "Functions": [
+  {
+   "Name": "Accessory storage areas, mechanical equipment room",
+   "Factor": 300.0,
+   "Basis": "Gross",
+   "Occupancy": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)"
+  },
+  {
+   "Name": "Agricultural building",
+   "Factor": 300.0,
+   "Basis": "Gross",
+   "Occupancy": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)"
+  },
+  {
+   "Name": "Aircraft hangars",
+   "Factor": 500.0,
+   "Basis": "Gross",
+   "Occupancy": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)"
+  },
+  {
+   "Name": "Airport terminal - Baggage claim",
+   "Factor": 20.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Passenger terminals and transportation facilities"
+  },
+  {
+   "Name": "Airport terminal - Baggage handling",
+   "Factor": 300.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Passenger terminals and transportation facilities"
+  },
+  {
+   "Name": "Airport terminal - Concourse",
+   "Factor": 100.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Passenger terminals and transportation facilities"
+  },
+  {
+   "Name": "Airport terminal - Waiting areas",
+   "Factor": 15.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Passenger terminals and transportation facilities"
+  },
+  {
+   "Name": "Assembly - Gaming floors (keno, slots, etc.)",
+   "Factor": 11.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Casino gaming areas"
+  },
+  {
+   "Name": "Assembly - Exhibit gallery and museum",
+   "Factor": 30.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Assembly with fixed seats",
+   "Factor": 0.0,
+   "Basis": "See Section 1004.6 - use seat count",
+   "Occupancy": "Assembly - Theaters and other buildings for the performing arts and motion pictures"
+  },
+  {
+   "Name": "Assembly without fixed seats - Concentrated (chairs only, not fixed)",
+   "Factor": 7.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Places of worship and other religious services"
+  },
+  {
+   "Name": "Assembly without fixed seats - Standing space",
+   "Factor": 5.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Nightclubs, bars, taverns, dance halls and buildings for similar purposes"
+  },
+  {
+   "Name": "Assembly without fixed seats - Unconcentrated (tables and chairs)",
+   "Factor": 15.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Restaurants, banquet halls and food courts"
+  },
+  {
+   "Name": "Bowling centers - additional areas (5 persons per lane incl. 15 ft of runway)",
+   "Factor": 7.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Business areas",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Business - Buildings for the transaction of business, non-medical professional services, other services involving merchandise, office buildings, banks, light industrial and similar uses"
+  },
+  {
+   "Name": "Concentrated business use areas",
+   "Factor": 0.0,
+   "Basis": "See Section 1004.8",
+   "Occupancy": "Business - Buildings for the transaction of business, non-medical professional services, other services involving merchandise, office buildings, banks, light industrial and similar uses"
+  },
+  {
+   "Name": "Courtrooms - other than fixed seating areas",
+   "Factor": 40.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Day care",
+   "Factor": 35.0,
+   "Basis": "Net",
+   "Occupancy": "Institutional - Adult day care and child day care"
+  },
+  {
+   "Name": "Dormitories",
+   "Factor": 50.0,
+   "Basis": "Gross",
+   "Occupancy": "Residential - Dormitories, fraternities, sororities and boarding houses (not transient)"
+  },
+  {
+   "Name": "Educational - Classroom area",
+   "Factor": 20.0,
+   "Basis": "Net",
+   "Occupancy": "Educational - Educational facilities"
+  },
+  {
+   "Name": "Educational - Shops and other vocational room areas",
+   "Factor": 50.0,
+   "Basis": "Net",
+   "Occupancy": "Educational - Educational facilities"
+  },
+  {
+   "Name": "Exercise rooms",
+   "Factor": 50.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Group H-5 Fabrication and manufacturing areas",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Factory and industrial - Structures in which occupants are engaged in work fabricating, assembly or processing of products or materials"
+  },
+  {
+   "Name": "Industrial areas",
+   "Factor": 100.0,
+   "Basis": "Gross",
+   "Occupancy": "Factory and industrial - Structures in which occupants are engaged in work fabricating, assembly or processing of products or materials"
+  },
+  {
+   "Name": "Institutional areas - Inpatient treatment areas",
+   "Factor": 240.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Hospitals - care recipient treatment areas"
+  },
+  {
+   "Name": "Institutional areas - Outpatient areas",
+   "Factor": 100.0,
+   "Basis": "Gross",
+   "Occupancy": "Business - Ambulatory care facilities and outpatient clinics"
+  },
+  {
+   "Name": "Institutional areas - Sleeping areas",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Hospitals - sleeping units for care recipients"
+  },
+  {
+   "Name": "Kitchens, commercial",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Restaurants, banquet halls and food courts"
+  },
+  {
+   "Name": "Library - Reading rooms",
+   "Factor": 50.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Library - Stack area",
+   "Factor": 100.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Locker rooms",
+   "Factor": 50.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Auditoriums without permanent seating, art galleries, exhibition halls, museums, lecture halls, libraries, arcades and gymnasiums"
+  },
+  {
+   "Name": "Mall buildings - covered and open",
+   "Factor": 0.0,
+   "Basis": "See Section 402.8.2",
+   "Occupancy": "Mercantile - Retail stores, service stations, shops, salesrooms, markets and shopping centers"
+  },
+  {
+   "Name": "Mercantile",
+   "Factor": 60.0,
+   "Basis": "Gross",
+   "Occupancy": "Mercantile - Retail stores, service stations, shops, salesrooms, markets and shopping centers"
+  },
+  {
+   "Name": "Mercantile - Storage, stock, shipping areas",
+   "Factor": 300.0,
+   "Basis": "Gross",
+   "Occupancy": "Mercantile - Retail stores, service stations, shops, salesrooms, markets and shopping centers"
+  },
+  {
+   "Name": "Parking garages",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)"
+  },
+  {
+   "Name": "Residential",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Residential - Apartment house"
+  },
+  {
+   "Name": "Skating rinks, swimming pools - Rink and pool",
+   "Factor": 50.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Coliseums, arenas, skating rinks and tennis courts for indoor sporting events and activities"
+  },
+  {
+   "Name": "Skating rinks, swimming pools - Decks",
+   "Factor": 15.0,
+   "Basis": "Gross",
+   "Occupancy": "Assembly - Coliseums, arenas, skating rinks and tennis courts for indoor sporting events and activities"
+  },
+  {
+   "Name": "Stages and platforms",
+   "Factor": 15.0,
+   "Basis": "Net",
+   "Occupancy": "Assembly - Theaters and other buildings for the performing arts and motion pictures"
+  },
+  {
+   "Name": "Warehouses",
+   "Factor": 500.0,
+   "Basis": "Gross",
+   "Occupancy": "Storage - Structures for the storage of goods, warehouses, storehouse and freight depots (low and moderate hazard)"
+  },
+  {
+   "Name": "Assembly with fixed seats - Coliseum / arena / indoor sporting events",
+   "Factor": 0.0,
+   "Basis": "See Section 1004.6 - use seat count",
+   "Occupancy": "Assembly - Coliseums, arenas, skating rinks and tennis courts for indoor sporting events and activities"
+  },
+  {
+   "Name": "Assembly with fixed seats - Stadium / bleachers / grandstand",
+   "Factor": 0.0,
+   "Basis": "See Section 1004.6 - use seat count",
+   "Occupancy": "Assembly - Stadiums, amusement parks, bleachers and grandstands for outdoor sporting events and activities"
+  },
+  {
+   "Name": "Institutional - Hospital and nursing home employees",
+   "Factor": 240.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Employees in hospitals and nursing homes"
+  },
+  {
+   "Name": "Institutional - Hospital and nursing home visitors",
+   "Factor": 240.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Visitors in hospitals and nursing homes"
+  },
+  {
+   "Name": "Institutional - Alcohol and drug center / group home care recipients",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Alcohol and drug centers, congregate care facilities, group homes, halfway houses, social rehabilitation facilities and foster care facilities"
+  },
+  {
+   "Name": "Institutional - Assisted living: care recipient sleeping units",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Assisted living and residential board and care facilities - sleeping units for care recipients"
+  },
+  {
+   "Name": "Institutional - Assisted living: dwelling units",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Assisted living and residential board and care facilities - dwelling units for care recipients"
+  },
+  {
+   "Name": "Institutional - Assisted living: employee facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Assisted living and residential board and care facilities - employee facilities"
+  },
+  {
+   "Name": "Institutional - Assisted living: visitor facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Assisted living and residential board and care facilities - visitor facilities"
+  },
+  {
+   "Name": "Institutional - Nursing home: care recipient sleeping units",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Nursing homes - sleeping units for care recipients"
+  },
+  {
+   "Name": "Institutional - Nursing home: employee facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Nursing homes - employee facilities"
+  },
+  {
+   "Name": "Institutional - Nursing home: visitor facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Nursing homes - visitor facilities"
+  },
+  {
+   "Name": "Institutional - Hospital: care recipient sleeping units",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Hospitals - sleeping units for care recipients"
+  },
+  {
+   "Name": "Institutional - Hospital: employee facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Hospitals - employee facilities"
+  },
+  {
+   "Name": "Institutional - Hospital: visitor facilities",
+   "Factor": 150.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Hospitals - visitor facilities"
+  },
+  {
+   "Name": "Institutional - Prison cells",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Prisons - cells"
+  },
+  {
+   "Name": "Institutional - Reformatory / detention center cells",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Reformatories, detention centers and correctional centers - cells"
+  },
+  {
+   "Name": "Institutional - Reformatory / detention congregate living",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Reformatories, detention centers and correctional centers - congregate living facilities"
+  },
+  {
+   "Name": "Institutional - Reformatory / detention employees",
+   "Factor": 120.0,
+   "Basis": "Gross",
+   "Occupancy": "Institutional - Reformatories, detention centers and correctional centers - employees"
+  },
+  {
+   "Name": "Residential - Hotel, motel or boarding house guestrooms",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Residential - Hotels, motels, boarding houses (transient)"
+  },
+  {
+   "Name": "Residential - Congregate living, 16 or fewer care recipients",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Residential - Congregate living facilities with 16 or fewer care recipients receiving custodial care"
+  },
+  {
+   "Name": "Residential - One- and two-family dwelling or lodging house",
+   "Factor": 200.0,
+   "Basis": "Gross",
+   "Occupancy": "Residential - One- and two-family dwellings and lodging houses with five or fewer guestrooms"
+  }
+ ]
+}

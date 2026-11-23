@@ -140,6 +140,97 @@
                 </Grid>
             </TabItem>
 
+            <!-- ================================================================ CODE ANALYSIS -->
+            <TabItem Header="  Code analysis  ">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" DataContext="{Binding CodeAnalysis}">
+                    <Grid Margin="24,18">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="28"/>
+                            <ColumnDefinition Width="420"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource PageTitle}" Text="Plumbing fixtures"/>
+                            <TextBlock Style="{StaticResource PageIntro}" Text="FBC Plumbing Table 403.1, from your Plumbing Calculator. Filled in from the project's occupancy type and area; change anything here. For mixed use, add a row per occupancy."/>
+                            <Grid Margin="0,0,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="36"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Function of space (Table 1004.5)" FontWeight="SemiBold"/>
+                                <TextBlock Grid.Column="1" Text="Area / count" FontWeight="SemiBold" Margin="6,0,0,0"/>
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding Rows}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="110"/>
+                                                <ColumnDefinition Width="36"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <ComboBox IsEditable="True" MaxWidth="10000"
+                                                      ItemsSource="{Binding DataContext.Functions, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                      Text="{Binding Function, UpdateSourceTrigger=LostFocus}"/>
+                                            <TextBox Grid.Column="1" Margin="6,0,0,0" Text="{Binding Area, UpdateSourceTrigger=PropertyChanged}"/>
+                                            <Button Grid.Column="2" Content="✕" MinWidth="28" Padding="0" Margin="6,0,0,0" ToolTip="Remove row" Click="RemovePlumbingRow_Click"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="6,1,0,0" Text="{Binding BasisHint}" Style="{StaticResource Hint}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Content="Add occupancy" HorizontalAlignment="Left" Click="AddPlumbingRow_Click"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                                <TextBlock Text="Male %" VerticalAlignment="Center"/>
+                                <TextBox Width="50" Margin="6,0,18,0" Text="{Binding MalePercent, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Text="Floors" VerticalAlignment="Center"/>
+                                <TextBox Width="40" Margin="6,0,18,0" Text="{Binding Floors, UpdateSourceTrigger=PropertyChanged}"/>
+                                <CheckBox IsChecked="{Binding FountainMinimumOne}" Content="Minimum 1 drinking fountain per occupancy" VerticalAlignment="Center" Margin="0"/>
+                            </StackPanel>
+
+                            <TextBlock Style="{StaticResource PageTitle}" Text="Egress distances" Margin="0,28,0,4"/>
+                            <TextBlock Style="{StaticResource PageIntro}" Text="Common path, dead end and travel distance limits (2023 FBC and FFPC), from your egress calculator."/>
+                            <TextBlock Text="FBC occupancy" FontWeight="SemiBold" Margin="0,0,0,3"/>
+                            <ComboBox ItemsSource="{Binding FbcOccupancies}" Text="{Binding FbcOccupancy}" IsEditable="True"/>
+                            <TextBlock Text="FFPC / NFPA 101 occupancy" FontWeight="SemiBold" Margin="0,10,0,3"/>
+                            <ComboBox ItemsSource="{Binding FfpcOccupancies}" Text="{Binding FfpcOccupancy}" IsEditable="True"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                <RadioButton GroupName="age" IsChecked="{Binding NewBuilding}" Content="New construction" Margin="0,0,18,0"/>
+                                <RadioButton GroupName="age" IsChecked="{Binding ExistingBuilding}" Content="Existing building"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <RadioButton GroupName="spr" IsChecked="{Binding Sprinklered}" Content="Sprinklered" Margin="0,0,18,0"/>
+                                <RadioButton GroupName="spr" IsChecked="{Binding Unsprinklered}" Content="Unsprinklered"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Style="{StaticResource PageTitle}" Text="Results"/>
+                            <Border BorderBrush="#C9D2DA" BorderThickness="1" CornerRadius="4" Padding="12,8">
+                                <StackPanel>
+                                    <TextBlock Text="Required plumbing fixtures" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding PlumbingSummary}" TextWrapping="Wrap" Margin="0,4,0,12" LineHeight="20"/>
+                                    <TextBlock Text="Egress limits" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding EgressSummary}" TextWrapping="Wrap" Margin="0,4,0,0" LineHeight="20"/>
+                                    <TextBlock Text="{Binding Problems}" TextWrapping="Wrap" Foreground="#9A3412" Margin="0,8,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Style="{StaticResource Hint}" Margin="0,10,0,0" TextWrapping="Wrap">
+                                These results fill placeholders in your drawings, e.g. [[WC_MALE_REQ]], [[LAV_TOTAL_REQ]], [[FOUNTAIN_REQ]],
+                                [[CP_FBC]], [[TD_FFPC_SECTION]], [[EGRESS_NOTE1]]. See the README for the full list.
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
             <!-- ================================================================ STANDARDS -->
             <TabItem Header="  My standards  ">
                 <DockPanel Margin="24,18">
