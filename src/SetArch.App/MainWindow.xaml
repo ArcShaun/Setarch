@@ -1,0 +1,381 @@
+<Window x:Class="SetArch.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SetArch.App"
+        Title="SetArch - Architectural Sheet Setup for AutoCAD"
+        Width="1100" Height="760" MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI" FontSize="13.5">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="230"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Step rail -->
+        <DockPanel Grid.RowSpan="2" Background="{StaticResource Rail}">
+            <StackPanel DockPanel.Dock="Top" Margin="18,20,18,16">
+                <TextBlock Text="SetArch" FontSize="24" FontWeight="Bold" Foreground="{StaticResource Accent}"/>
+                <TextBlock Text="Sheet setup for AutoCAD" Foreground="{StaticResource Muted}"/>
+            </StackPanel>
+            <ListBox ItemsSource="{Binding StepNames}" SelectedIndex="{Binding Step, Mode=TwoWay}"
+                     IsEnabled="{Binding Busy, Converter={x:Static local:InverseBool.Instance}}"
+                     Background="Transparent" BorderThickness="0" Padding="8,0">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="10,8"/>
+                        <Setter Property="Margin" Value="0,1"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </DockPanel>
+
+        <!-- Pages -->
+        <TabControl Grid.Column="1" SelectedIndex="{Binding Step}" BorderThickness="0" Padding="0" Background="White">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.ItemContainerStyle>
+
+            <!-- 1. Project -->
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,24" MaxWidth="760" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Tell me about the project"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="These details fill in the title block on every sheet. You can leave anything blank."/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="What is the project called?"/>
+                        <TextBox Text="{Binding Answers.Project.ProjectName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Project number"/>
+                        <TextBox Text="{Binding Answers.Project.ProjectNumber}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Who is the client?"/>
+                        <TextBox Text="{Binding Answers.Project.Client}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Site address"/>
+                        <TextBox Text="{Binding Answers.Project.SiteAddress}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Your firm / architect name"/>
+                        <TextBox Text="{Binding Answers.Project.FirmName}"/>
+                        <TextBlock Style="{StaticResource Hint}" Text="Remembered for next time."/>
+
+                        <Grid Margin="0,6,0,0" MaxWidth="520" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource Question}" Text="Drawn by"/>
+                                <TextBox Text="{Binding Answers.Project.DrawnBy}"/>
+                                <TextBlock Style="{StaticResource Question}" Text="Date"/>
+                                <TextBox Text="{Binding Answers.Project.Date}"/>
+                                <TextBlock Style="{StaticResource Question}" Text="Status / issue"/>
+                                <ComboBox IsEditable="True" Text="{Binding Answers.Project.Status}">
+                                    <ComboBoxItem Content="PRELIMINARY"/>
+                                    <ComboBoxItem Content="FOR CLIENT REVIEW"/>
+                                    <ComboBoxItem Content="FOR PLANNING"/>
+                                    <ComboBoxItem Content="FOR PERMIT"/>
+                                    <ComboBoxItem Content="FOR TENDER"/>
+                                    <ComboBoxItem Content="FOR CONSTRUCTION"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Style="{StaticResource Question}" Text="Checked by"/>
+                                <TextBox Text="{Binding Answers.Project.CheckedBy}"/>
+                                <TextBlock Style="{StaticResource Question}" Text="Revision"/>
+                                <TextBox Text="{Binding Answers.Project.Revision}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 2. Paper -->
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,24" MaxWidth="760" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Paper and plotting"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="Every sheet gets a saved page setup, so it plots correctly straight away."/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="What paper size are the sheets?"/>
+                        <ComboBox ItemsSource="{Binding PaperSizes}" SelectedItem="{Binding SelectedPaper}" DisplayMemberPath="Name"/>
+                        <TextBlock Style="{StaticResource Hint}">
+                            <Run Text="Sheets will be drawn in"/> <Run Text="{Binding UnitsLabel, Mode=OneWay}" FontWeight="SemiBold"/><Run Text=". ISO sizes use metric scales, ARCH/ANSI sizes use imperial scales."/>
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Orientation"/>
+                        <ComboBox ItemsSource="{Binding Orientations}" SelectedValuePath="Value" DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Answers.Format.Orientation}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Which plotter / PC3 should the page setup use?"/>
+                        <ComboBox IsEditable="True" ItemsSource="{Binding PlotDevices}" Text="{Binding Answers.Format.PlotDevice}"/>
+                        <TextBlock Style="{StaticResource Hint}" Text="Type the name of your own plotter configuration if you have one. If it doesn't offer the chosen paper size, SetArch will tell you and you can set it with PAGESETUP."/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Plot style table"/>
+                        <ComboBox IsEditable="True" ItemsSource="{Binding PlotStyles}" Text="{Binding Answers.Format.PlotStyleTable}"/>
+                        <TextBlock Style="{StaticResource Hint}" Text="Use a .ctb for color-dependent drawings or a .stb for named plot style drawings. Leave blank for none."/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 3. Title block -->
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,24" MaxWidth="760" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Title block"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="Use a clean generated title block, or your office's own title block drawing."/>
+
+                        <RadioButton GroupName="tb" IsChecked="{Binding UseGeneratedTitleBlock}" Content="Generate a title block for me"/>
+                        <StackPanel Margin="24,4,0,8" IsEnabled="{Binding UseGeneratedTitleBlock}">
+                            <TextBlock Style="{StaticResource Question}" Text="Where should it go?"/>
+                            <ComboBox ItemsSource="{Binding Placements}" SelectedValuePath="Value" DisplayMemberPath="Name"
+                                      SelectedValue="{Binding Answers.TitleBlock.Placement}"/>
+                            <TextBlock Style="{StaticResource Hint}" Text="The generated title block includes a border, revisions box, firm, project, client, site, sheet title, status, drawn/checked, date, scale, project number, revision and a large sheet number."/>
+                        </StackPanel>
+
+                        <RadioButton GroupName="tb" IsChecked="{Binding UseCustomTitleBlock}" Content="Use my own title block drawing (.dwg)"/>
+                        <StackPanel Margin="24,4,0,0" IsEnabled="{Binding UseCustomTitleBlock}">
+                            <DockPanel MaxWidth="520" HorizontalAlignment="Stretch" Margin="0,6,0,0">
+                                <Button DockPanel.Dock="Right" Content="Browse..." Margin="8,0,0,0" Click="BrowseTitleBlock_Click"/>
+                                <TextBox Text="{Binding CustomBlockPath, UpdateSourceTrigger=PropertyChanged}"/>
+                            </DockPanel>
+                            <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,0">
+                                It is inserted at 0,0 in paper space on every sheet, drawn at 1:1 in <Run Text="{Binding UnitsLabel, Mode=OneWay}"/>.
+                                Attributes are filled in automatically when their tags match, e.g. PROJECT_NAME, PROJECT_NO, CLIENT, ADDRESS, FIRM,
+                                SHEET_TITLE, SHEET_NO, SHEET_OF, SCALE, DRAWN, CHECKED, DATE, REV, STATUS (common variations such as DWG_NO or DRAWN_BY also work).
+                            </TextBlock>
+
+                            <TextBlock Style="{StaticResource Question}" Text="Space taken by your title block (for placing the viewport)"/>
+                            <Grid MaxWidth="520" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/><ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/><ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/><ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="Auto"/><ColumnDefinition Width="70"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Left " VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="1" Text="{Binding Answers.TitleBlock.CustomMarginLeft}"/>
+                                <TextBlock Grid.Column="3" Text="Right " VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="4" Text="{Binding Answers.TitleBlock.CustomMarginRight}"/>
+                                <TextBlock Grid.Column="6" Text="Top " VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="7" Text="{Binding Answers.TitleBlock.CustomMarginTop}"/>
+                                <TextBlock Grid.Column="9" Text="Bottom " VerticalAlignment="Center"/>
+                                <TextBox Grid.Column="10" Text="{Binding Answers.TitleBlock.CustomMarginBottom}"/>
+                            </Grid>
+                            <TextBlock Style="{StaticResource Hint}" Text="Distance from each paper edge to the free drawing area, in paper units."/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 4. Which sheets -->
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,24" MaxWidth="760" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Which sheets do you need?"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="Answer these and SetArch builds a numbered sheet list. You can fine-tune it on the next page."/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="General"/>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeCover}" Content="Cover sheet with sheet index"/>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeGeneralNotes}" Content="General notes sheet"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Plans"/>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeSitePlan}" Content="Site plan"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <TextBlock Text="How many floors above ground (incl. ground floor)?" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.FloorCount}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="How many basement levels?" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.BasementCount}"/>
+                        </StackPanel>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeRoofPlan}" Content="Roof plan"/>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeReflectedCeilingPlans}" Content="Reflected ceiling plans (one per floor)"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Elevations, sections and details"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock Text="Elevation sheets" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.ElevationSheetCount}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="Section sheets" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.SectionSheetCount}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="Detail sheets" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.DetailSheetCount}"/>
+                        </StackPanel>
+                        <CheckBox IsChecked="{Binding Answers.Sheets.IncludeSchedules}" Content="Door and window schedules"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="How should sheets be numbered?"/>
+                        <ComboBox ItemsSource="{Binding NumberingSchemes}" SelectedValuePath="Value" DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Answers.Sheets.Numbering}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="Prefix for sequential numbers" Width="330" VerticalAlignment="Center"/>
+                            <TextBox Width="60" Text="{Binding Answers.Sheets.SequentialPrefix}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 5. Sheet list -->
+            <TabItem>
+                <DockPanel Margin="32,24">
+                    <StackPanel DockPanel.Dock="Top">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Check the sheet list"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="Edit numbers, titles and viewport scales directly in the table. Each row becomes one layout tab in AutoCAD."/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0">
+                        <Button Content="Add sheet" Command="{Binding AddSheetCommand}"/>
+                        <Button Content="Remove selected" Margin="8,0,0,0" Click="RemoveSheet_Click"/>
+                        <Button Content="Move up" Margin="8,0,0,0" Click="MoveUp_Click"/>
+                        <Button Content="Move down" Margin="8,0,0,0" Click="MoveDown_Click"/>
+                        <Button Content="Rebuild from answers" Margin="24,0,0,0" Command="{Binding RegenerateCommand}"/>
+                    </StackPanel>
+                    <DataGrid x:Name="SheetGrid" ItemsSource="{Binding SheetRows}" AutoGenerateColumns="False"
+                              CanUserAddRows="False" CanUserDeleteRows="True" HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#E3E7EB"
+                              RowHeight="30" SelectionMode="Extended" CellEditEnding="SheetGrid_CellEditEnding">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Number" Binding="{Binding Number}" Width="110"/>
+                            <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
+                            <DataGridTemplateColumn Header="Type" Width="190">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding DataContext.SheetKinds, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                  SelectedItem="{Binding Kind, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" MaxWidth="10000"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Viewport scale" Width="170">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding DataContext.ScaleOptions, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                  SelectedValuePath="Value" DisplayMemberPath="Name"
+                                                  SelectedValue="{Binding ScaleId, UpdateSourceTrigger=PropertyChanged}" BorderThickness="0" MaxWidth="10000"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <!-- 6. Standards -->
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,24" MaxWidth="760" HorizontalAlignment="Left">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Drawing standards"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="Set up the drawing so it's ready to draw in. Existing layers and styles are never changed."/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Which layers should be created?"/>
+                        <ComboBox ItemsSource="{Binding LayerStandardsOptions}" SelectedValuePath="Value" DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Answers.Standards.Layers}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="How should layout tabs be named?"/>
+                        <ComboBox ItemsSource="{Binding LayoutNamings}" SelectedValuePath="Value" DisplayMemberPath="Name"
+                                  SelectedValue="{Binding Answers.Standards.LayoutNaming}"/>
+
+                        <TextBlock Style="{StaticResource Question}" Text="Options"/>
+                        <CheckBox IsChecked="{Binding Answers.Standards.CreateTextStyles}" Content="Create text styles (SA-TITLE, SA-TEXT, SA-NOTES)"/>
+                        <CheckBox IsChecked="{Binding Answers.Standards.AddViewTitles}" Content="Add a view title and scale under each viewport"/>
+                        <CheckBox IsChecked="{Binding Answers.Standards.LockViewports}" Content="Lock viewports so the scale can't be changed by accident"/>
+                        <CheckBox IsChecked="{Binding Answers.Standards.DeleteDefaultLayouts}" Content="Remove the empty Layout1 / Layout2 tabs"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- 7. Review & create -->
+            <TabItem>
+                <Grid Margin="32,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="330"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="140"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.ColumnSpan="3">
+                        <TextBlock Style="{StaticResource PageTitle}" Text="Review and create"/>
+                        <TextBlock Style="{StaticResource PageIntro}" Text="{Binding ReviewSummary}"/>
+                        <ItemsControl ItemsSource="{Binding ValidationErrors}" Margin="0,0,0,10">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StringFormat='⚠  {0}'}" Foreground="#B3261E" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <DockPanel Grid.Row="1">
+                        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                            <TextBlock Text="Preview " VerticalAlignment="Center" Foreground="{StaticResource Muted}"/>
+                            <ComboBox ItemsSource="{Binding PreviewPlan.Sheets}" SelectedItem="{Binding PreviewSheet}" DisplayMemberPath="LayoutName" MaxWidth="10000"/>
+                        </DockPanel>
+                        <Border Background="#E9EDF1" CornerRadius="4">
+                            <local:SheetPreview Plan="{Binding PreviewPlan}" Sheet="{Binding PreviewSheet}" Margin="6"/>
+                        </Border>
+                    </DockPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock Style="{StaticResource Question}" Margin="0,0,0,4" Text="How do you want to create the sheets?"/>
+                        <RadioButton GroupName="out" IsChecked="{Binding CreateInAutoCad}" Content="Create them in AutoCAD now"/>
+                        <StackPanel Margin="22,2,0,8" IsEnabled="{Binding CreateInAutoCad}">
+                            <TextBlock Style="{StaticResource Hint}" Text="Full AutoCAD (incl. Architecture). Starts AutoCAD if it isn't running."/>
+                            <RadioButton GroupName="target" IsChecked="{Binding NewDrawing}" Content="In a new drawing"/>
+                            <RadioButton GroupName="target" IsChecked="{Binding NewDrawing, Converter={x:Static local:InverseBool.Instance}}" Content="In the drawing that's open now"/>
+                            <TextBlock Text="Save the drawing as (optional)" Margin="0,8,0,2"/>
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Content="..." MinWidth="30" Padding="6,3" Margin="6,0,0,0" Click="BrowseSaveDwg_Click"/>
+                                <TextBox Text="{Binding SaveDrawingPath}"/>
+                            </DockPanel>
+                        </StackPanel>
+
+                        <RadioButton GroupName="out" IsChecked="{Binding SaveLisp}" Content="Save an AutoLISP file to run later"/>
+                        <StackPanel Margin="22,2,0,0" IsEnabled="{Binding SaveLisp}">
+                            <TextBlock Style="{StaticResource Hint}" Text="Works in AutoCAD LT 2024 and newer, or on another computer. In AutoCAD: APPLOAD the file, then type SETARCH."/>
+                            <CheckBox IsChecked="{Binding LispPageSetup}" Content="Include page setup (plotter + paper)"/>
+                        </StackPanel>
+
+                        <Button Content="Create" Style="{StaticResource Primary}" Margin="0,18,0,0" Padding="14,9" FontSize="15"
+                                Click="Create_Click" IsEnabled="{Binding IsValid}"/>
+                    </StackPanel>
+
+                    <TextBox Grid.Row="2" Grid.ColumnSpan="3" Margin="0,12,0,0" Text="{Binding Log, Mode=OneWay}" IsReadOnly="True"
+                             FontFamily="Consolas" FontSize="12" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"
+                             MaxWidth="10000" x:Name="LogBox" TextChanged="LogBox_TextChanged" Background="#FAFBFC"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Footer -->
+        <Border Grid.Row="1" Grid.Column="1" BorderBrush="#E3E7EB" BorderThickness="0,1,0,0" Padding="24,10">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Open answers..." Click="LoadAnswers_Click"/>
+                    <Button Content="Save answers..." Margin="8,0,0,0" Click="SaveAnswers_Click"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Back" Command="{Binding BackCommand}"/>
+                    <Button Content="Next" Margin="8,0,0,0" Command="{Binding NextCommand}" Style="{StaticResource Primary}"
+                            Visibility="{Binding IsLastStep, Converter={x:Static local:InverseBoolToVisibility.Instance}}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

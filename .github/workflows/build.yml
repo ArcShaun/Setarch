@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test
+        run: dotnet test tests/SetArch.Core.Tests -c Release
+
+      - name: Build app
+        run: dotnet build src/SetArch.App -c Release
+
+      - name: Publish SetArch.exe (single file, no .NET install needed)
+        run: >
+          dotnet publish src/SetArch.App -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SetArch-win-x64
+          path: publish/SetArch.exe
